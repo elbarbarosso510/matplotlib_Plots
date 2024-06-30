@@ -1,0 +1,101 @@
+#!/usr/bin/env node
+
+'use strict';
+
+// script to try to convert a cmdline to a config json
+
+/* eslint-disable no-console,no-process-exit */
+
+const fs = require('fs');
+
+const cmd = fs
+  .readFileSync(process.argv[2], 'utf8')
+  .replace(/^[\s\S]+xc:black/, '')
+  .replace(/ out\.png[\s\S]*/, '');
+const cfg = { fontFamily: 'Myriad Pro', version: 1, metrics: {} };
+
+const imgRE = /\\\(\s+(?<path>\S+) -normalize -crop (?<cropW>\d+)x(?<cropH>\d+)\+(?<cropX>\d+)\+(?<cropY>\d+) -resize (?<width>\d+)x(?<height>\d+)(?:\s+\\\)|.+?-annotate 0 '(?<caption>.+?)' -fill).+?-gravity northwest -geometry \+(?<left>[\d.]+)\+(?<top>[\d.]+)/g;
+let m;
+const boxes = [];
+while ((m = imgRE.exec(cmd))) {
+  const g = m.groups;
+  boxes.push({
+    crop: {
+      cropX: Number(g.cropX),
+      cropY: Number(g.cropY),
+      cropW: Number(g.cropW),
+      cropH: Number(g.cropH),
+    },
+    width: Number(g.width),
+    height: Number(g.height),
+    pos: {
+      top: Math.round(Number(g.top)),
+      left: Math.round(Number(g.left)),
+    },
+    path: g.path,
+    ...(g.caption && { caption: g.caption.replace(/\\n/g, '\n') }),
+  });
+}
+
+if (boxes.some(b => b.pos.top === 2780 && b.pos.left === 992)) {
+  cfg.curTemplate = 4; // right 7
+} else if (boxes.some(b => b.pos.top === 2780 && b.pos.left === 2668)) {
+  cfg.curTemplate = 1; // left 7
+} else if (boxes.some(b => b.pos.top === 2375 && b.pos.left === 1582)) {
+  cfg.curTemplate = 3; // right 6
+} else if (boxes.some(b => b.pos.top === 2375 && b.pos.left === 2668)) {
+  cfg.curTemplate = 0; // left 6
+} else if (boxes.some(b => b.pos.top === 2375 && b.pos.left === 992)) {
+  cfg.curTemplate = 5; // right 5
+} else if (boxes.some(b => b.pos.top === 2375 && b.pos.left === 2074)) {
+  cfg.curTemplate = 2; // left 5
+} else {
+  cfg.curTemplate = 6; // left cover
+}
+
+const isRight = [3, 4, 5].includes(cfg.curTemplate);
+for (const box of boxes) {
+  let i;
+  switch (`${box.pos.top} ${box.pos.left}`) {
+    case '0 0':
+    case '120 0':
+      i = isRight ? 1 : 0;
+      break;
+    case '0 2176':
+      i = isRight ? 0 : 1;
+      break;
+    case '0 2074':
+    case '120 2074':
+      i = 1;
+      break;
+    case '1581 0':
+    case '1581 3258':
+    case '1701 3258':
+      i = 2;
+      break;
+    case '1581 2074':
+    case '1701 2074':
+    case '1581 992':
+      i = 3;
+      break;
+    case '2375 2074':
+    case '2375 1582':
+    case '2495 2074':
+      i = 4;
+      break;
+    case '2375 992':
+    case '2375 2668':
+      i = 5;
+      break;
+    case '2780 2668':
+    case '2780 992':
+      i = 6;
+      break;
+    default:
+      console.error('Unknown box: ', box);
+      process.exit(1);
+  }
+  cfg.metrics[`box${i + 1}`] = box;
+}
+
+console.log(JSON.stringify(cfg, null, 2));
