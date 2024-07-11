@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "commonjs",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "types": [
+      "node",
+      "jquery"
+    ],
+    "esModuleInterop": true
+  },
+  "exclude": [],
+  "include": [
+    "typings/**/*.d.ts",
+    "*.js"
+  ]
+}
