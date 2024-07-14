@@ -1,0 +1,63 @@
+{
+  "name": "dozenmatter",
+  "version": "2.3.2",
+  "description": "Mattes a dozen or less images",
+  "repository": {
+    "url": "https://github.com/dbushong/dozenmatter",
+    "type": "git"
+  },
+  "build": {
+    "appId": "com.floatingsheep.dozenmatter",
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    },
+    "productName": "DozenMatter",
+    "publish": [
+      "github"
+    ]
+  },
+  "author": "David Bushong <david@bushong.net>",
+  "license": "MIT",
+  "main": "main.js",
+  "engines": {
+    "node": ">=12.18.3"
+  },
+  "files": [
+    "build/icon.png",
+    "vendor",
+    "*.js",
+    "*.html",
+    "*.css"
+  ],
+  "scripts": {
+    "watch-stylus": "stylus -w index.styl",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "release": "build",
+    "test": "eslint . && tsc"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.4",
+    "@types/node": "^10.17.47",
+    "electron": "^11.1.0",
+    "electron-builder": "^22.9.1",
+    "eslint": "^7.0.0",
+    "eslint-config-groupon": "^10.0.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-mocha": "^6.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "prettier": "^2.0.5",
+    "stylus": "^0.54.5",
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {}
+}
