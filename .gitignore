@@ -1,0 +1,6 @@
+/node_modules
+/npm-debug.log
+.*.swp
+*.js.map
+/*-x64
+/dist
