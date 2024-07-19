@@ -1,0 +1,17 @@
+{
+  "extends": "groupon",
+  "overrides": [
+    {
+      "files": "*.test.js",
+      "env": {
+        "mocha": true
+      }
+    }
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      { "singleQuote": true, "arrowParens": "avoid", "endOfLine": "auto" }
+    ]
+  }
+}
